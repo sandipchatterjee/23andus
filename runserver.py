@@ -5,4 +5,5 @@ from twentythreeandus import app
 
 if __name__ == '__main__':
     app.config['SECRET_KEY'] = 'secret_key_string' ## should pull this from environment in future
+    app.config['UPLOAD_FOLDER'] = os.getcwd()+'/uploads'
     app.run(host='0.0.0.0', port=8888, debug=True)

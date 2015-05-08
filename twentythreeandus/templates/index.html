@@ -1,17 +1,23 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
 {% block title %}{{ app_name }}{% endblock %}
 
 {% block navbar %}
 {{ super() }}
 {% endblock %}
 
+{{ form.csrf_token }}
+
 {% block content %}
 <div class="container">
     <div class="page-header">
         <h1> {{ app_name }} </h1>
-        Data from database...
-        <div class="span2">_id: {{ record['_id'] }}</div>
-        <div class="span2" >data: {{ record['data'] }}</div>
+
+        <div class="span2">
+            {{ wtf.quick_form(form, enctype="multipart/form-data") }}
+        </div>
+
     </div>
 </div>
 {% endblock %}
