@@ -1,3 +1,9 @@
+# venv
+venv
+
+# 23andme downloads
+genome*txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
