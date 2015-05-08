@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block navbar %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1> {{ app_name }} </h1>
+        Data from database...
+        <div class="span2">_id: {{ record['_id'] }}</div>
+        <div class="span2" >data: {{ record['data'] }}</div>
+    </div>
+</div>
+{% endblock %}
+
