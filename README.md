@@ -8,3 +8,4 @@ BD2K Hackathon / 23andUs project
 
 `pip install -r requirements.txt`
 
+`python runserver.py`
