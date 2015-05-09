@@ -2,7 +2,22 @@
 
 # from reference import References
 
-class Person(object):
+class Person: ## new from Naisha
+    '''Person class has the following attributes:
+    personID,gender, avatarImage, ethnicity, freckles,hairColor,eyeColor,brow,chin,matchScore'''
+    def __init__(self,personID,gender="male",avatarImage="image/default.jpg",ethnicity=None,freckles=False,hairColor="black",eyeColor="darkBrown",brow="normal",chin="normal",matchScore=0):
+        self.personID=personID
+        self.gender = gender
+        self.avatarImage=avatarImage
+        self.ethnicity=ethnicity
+        self.freckles=freckles
+        self.hairColor=hairColor
+        self.eyeColor=eyeColor
+        self.brow=brow
+        self.chin=chin
+        self.matchScore=matchScore
+
+class Person_old(object):
 
     def __init__(self, filename):
         

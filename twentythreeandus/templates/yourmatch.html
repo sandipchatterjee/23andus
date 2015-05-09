@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}{{ app_name }} -- Find Match{% endblock %}
+
+{% block navbar %}
+{{ super() }}
+{% endblock %}
+
+{{ form.csrf_token }}
+
+{% block page_content %}
+
+        <h2>Hello, {{ username }}!</h2>
+        <h3>You have {{ person_list|length }} matches!</h3>
+
+{% endblock %}
+

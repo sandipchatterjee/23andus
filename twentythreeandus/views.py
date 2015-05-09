@@ -10,8 +10,9 @@ from flask_wtf.file import FileField, FileRequired
 
 from twentythreeandus import app
 from twentythreeandus import client
-from twentythreeandus.person import Person
+# from twentythreeandus.person import Person
 from twentythreeandus.vcf_tools import convert_23andme
+from twentythreeandus import genotypematchme
 
 class SubmitForm(Form):
     """SubmitForm is a WTForm Form object for searching for uploading 23andMe data"""
@@ -25,7 +26,7 @@ class FindMatchForm(Form):
     # your_name = StringField('Your name:', validators=[Required()])
 
     # EyeColor
-    HairColor = SelectField('Hair color:', choices=[('any', 'Any'), ('black', 'Black'), ('brown','Brown'), ('blond','Blond'), ('red','Red')])
+    HairColor = SelectField('Hair color:', choices=[('any', 'Any'), ('black', 'Black'), ('brown','Brown'), ('blond','Blond'), ('red','Red')], validators=[Required()])
 
     opposite_sex = BooleanField('Only consider opposite sex matches')
     # data_file = FileField('Your 23andMe data file', validators=[Required()])
@@ -67,9 +68,22 @@ def index():
 def findmatch():
 
     findmatch_form = FindMatchForm()
-    # person = Person(vcf_file_path)
+
+    if findmatch_form.validate_on_submit():
+        if request.method == 'POST':
+            # message = Markup('Working on your match...')
+            # flash(message)
+            return redirect(url_for('yourmatch'))
 
     return render_template('findmatch.html', vcf_filepath=session['vcf_filepath'], username=session['username'], form=findmatch_form)
+
+@app.route('/yourmatch')
+def yourmatch():
+
+    vcf_file = session['vcf_filepath']
+    person_list = genotypematchme.score_me(submitter_vcf = vcf_file,submitter_gender = 'male')
+
+    return render_template('yourmatch.html', person_list=person_list, username=session['username'])
 
 @app.route('/pool')
 def pool():
