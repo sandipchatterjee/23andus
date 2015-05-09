@@ -108,7 +108,7 @@ def score_me(submitter_vcf,submitter_gender):
     submitter = meGeno[9].to_dict()
 
     score = {}
-    for sample in commonSamples:
+    for sample in commonSamples[:5]: ###REMOVE
         single_ref_dict = referencePoolGeno[sample].to_dict()
         score[sample]=score_user_against_single_reference(submitter, single_ref_dict,probability_dict,matchmesnps)
 

@@ -15,33 +15,17 @@
         <h3>You have {{ person_list|length }} matches</h3> 
         <h4>(after applying your filters to {{ num_persons }} total matches)</h4>
 
-        {% for person in person_list %}
-        <div class="alert alert-warning">
-            {{ person.get('avatarImage') }}
-            {{ person.get('matchScore') }}
-            {{ person.get('personID') }}
-            {{ person.get('gender') }}
-            {{ person.get('ethnicity') }}
-            {{ person.get('freckles') }}
-            {{ person.get('hairColor') }}
-            {{ person.get('eyeColor') }}
-            {{ person.get('brow') }}
-            {{ person.get('chin') }}
-
-        </div>
-        {% endfor %}
-
         <div class="container">
             {% for person in person_list %}
             <div class="row">
                 <!-- ROW 1 -->
                 <div class="col-md-4">
-                    <img src="/static/img/mii/{{ person.get('avatarImage') }}" width=250 height=250 />
+                    <img src="/static/img/mii/{{ person.avatarImage[0] }}" width=250 height=250 />
                 </div>
                 <div class="col-md-4">
-                    <h2>Person ID {{ person.get('personID') }}</h2>
-                    <h2><small>aka "{{ person.get('personName') }}"</small></h2>
-                    <h2>{{ username }} and "{{ person.get('personName') }}" matched with a score of {{ person.get('matchScore') }}</h2>
+                    <h2>Person ID {{ person.personID }}</h2>
+                    <h2><small>aka "{{ person.personName }}"</small></h2>
+                    <h2>{{ username }} and "{{ person.personName }}" matched with a score of {{ person.matchScore }}</h2>
              <!-- person.get('avatarImage')
              person.get('matchScore') 
              person.get('personID')
@@ -55,7 +39,7 @@
                 </div>
                 <div class="col-md-4">
                     <p>
-                    <em>"{{ person.get('personName') }}" {% if person.get('freckles') %} has {% else %} does not have {% endif %} freckles, {% if person.get('ethnicity') == 'EUR' %} is of European ethnicity ,{% endif %}{% if person.get('hairColor') %} has brown/black hair, {% endif %}{% if person.get('chin') %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
+                    <em>"{{ person.personName }}" {% if person.freckles %} has {% else %} does not have {% endif %} freckles, {% if person.ethnicity == 'EUR' %} is of European ethnicity ,{% endif %}{% if person.hairColor %} has brown/black hair, {% endif %}{% if person.chin %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
                     </p>
                 </div>
             </div>

@@ -22,18 +22,33 @@ class Person: ## new from Naisha
                  ethnicity=None,freckles=False,hairColor="black",
                  eyeColor="darkBrown",brow="normal",chin="normal",
                  genotype=None,matchScore=0,submitter_23=None):
-        self.personID=personID
-        self.gender = gender
-        self.avatarImage=avatarImage
-        self.ethnicity=ethnicity
-        self.freckles=freckles
-        self.hairColor=hairColor
-        self.eyeColor=eyeColor
-        self.brow=brow
-        self.chin=chin
-        self.matchScore=matchScore
-        self.genotype = genotype
-        self.submitter_23=submitter_23
+
+        self.attr_dict = {}
+        # self.personID=personID
+        # self.gender = gender
+        # self.avatarImage=avatarImage
+        # self.ethnicity=ethnicity
+        # self.freckles=freckles
+        # self.hairColor=hairColor
+        # self.eyeColor=eyeColor
+        # self.brow=brow
+        # self.chin=chin
+        # self.matchScore=matchScore
+        # self.genotype = genotype
+        # self.submitter_23=submitter_23
+
+        self.attr_dict['personID'] = personID
+        self.attr_dict['gender'] = gender
+        self.attr_dict['avatarImage'] = avatarImage
+        self.attr_dict['ethnicity'] = ethnicity
+        self.attr_dict['freckles'] = freckles
+        self.attr_dict['hairColor'] = hairColor
+        self.attr_dict['eyeColor'] = eyeColor
+        self.attr_dict['brow'] = brow
+        self.attr_dict['chin'] = chin
+        self.attr_dict['matchScore'] = matchScore
+        self.attr_dict['genotype'] =  genotype
+        self.attr_dict['submitter_23']= submitter_23
         
         if self.gender == 'male':
             self.personName = random.choice(male_names)
@@ -41,7 +56,10 @@ class Person: ## new from Naisha
             self.personName = random.choice(female_names)
 
     def get(self, attr):
-        return self.attr        
+        return self.attr
+
+    def __getattr__(self, attr):
+        return self.attr_dict.get(attr, None)
         
     def _calc_freckles(self):
         """

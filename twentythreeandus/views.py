@@ -62,7 +62,7 @@ class FindMatchForm(Form):
     chin = SelectField('Chin dimple?', choices=[('any', 'Any'), (True, 'Yes'), (False, 'No')], validators=[Required()])
     hairColor = SelectField('Hair color:', choices=[('any', 'Any'), ('brown_black', 'Brown/Black'), ('blonde','Blonde'), ('redhead','Red')], validators=[Required()])
     eyeColor = SelectField('Eye color:', choices=[('any', 'Any'), ('black', 'Black'), ('brown','Brown'), ('blue','Blue')], validators=[Required()])
-    ethnicity = SelectField('Ethnicity:', choices=[('EUR', 'European'), ('AFR', 'African'), ('AMR', 'American'), ('SAS', 'South Asian'), ('EAS', 'East Asian')])
+    ethnicity = SelectField('Ethnicity:', choices=[('any', 'Any'), ('EUR', 'European'), ('AFR', 'African'), ('AMR', 'American'), ('SAS', 'South Asian'), ('EAS', 'East Asian')])
 
     # opposite_sex = BooleanField('Only consider opposite sex matches')
     # data_file = FileField('Your 23andMe data file', validators=[Required()])
@@ -133,19 +133,24 @@ def yourmatch():
     num_persons = len(person_list)
 
     for person in person_list:
-        person.calc_features()
+        # person.calc_features()
+        print(person.personID)
 
     # filtering, if any
     filters = session['filters']
     for filter_param in filters:
-        if filter_param == 'any':
-            continue
-        else:
-            # filter person_list by filter_param
-            #
-            # for example, filter_param could be a eye_color, and filters['eye_color'] == 'brown'
-            # ...this list comprehension will filter by this filter_param
-            person_list = [person for person in person_list if person.get(filter_param) == filters[filter_param]]
+        if filters[filter_param] != 'any':
+            person_list = [person for person in person_list if person.filter_param == filters[filter_param]]
+            # continue
+        # else:
+        #     # filter person_list by filter_param
+        #     #
+        #     # for example, filter_param could be a eye_color, and filters['eye_color'] == 'brown'
+        #     # ...this list comprehension will filter by this filter_param
+            
+
+    print(filters)
+    print(len(person_list))
 
     return render_template('yourmatch.html', person_list=person_list[:5], num_persons=num_persons, username=session['username'])
 
