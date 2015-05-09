@@ -35,7 +35,7 @@ def generate_avatar(ancestry):
     
     subprocess.call(command)
     
-def calculate_population(path_to_23_file):
+def calculate_population(path_to_23_file, name):
     """
     Do this stuff:
     Command to convert 23andme to ped/map
@@ -44,3 +44,13 @@ def calculate_population(path_to_23_file):
     python runancestry.py --freq hapmap3.allchroms.shared.matrix --plink sandip --out sandip.ancestry
     """
     pass
+
+    # convert 23andme to bed/bim/bam
+    command = ['plink', '--23file', path_to_23_file, '--record','--out', name, '--make-bed']
+    subprocess.call(command)
+    
+    # run ancestry
+    command = ['python', 'runancestry.py', '--freq', 'hapmap3.allchroms.shared.matrix', '--plink', name, '--out', name + '.ancestry']
+    subprocess.call(command)
+    
+    
