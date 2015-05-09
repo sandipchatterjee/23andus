@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 
 # from reference import References
+from random import randint
+from collections import defaultdict
+HETERO = ['1/0','0/1','0/0']
+female_names = ['Sophia','Emma','Olivia','Ava','Isabella','Mia','Zoe','Lily','Emily','Madelyn','Madison','Chloe','Charlotte','Aubrey','Avery','Abigail','Kaylee','Layla','Harper','Ella','Amelia','Arianna','Riley','Aria','Hailey','Hannah','Aaliyah','Evelyn','Addison','Mackenzie','Adalyn','Ellie','Brooklyn','Nora','Scarlett','Grace','Anna','Isabelle','Natalie','Kaitlyn','Lillian','Sarah','Audrey','Elizabeth','Leah','Annabelle','Kylie','Mila','Claire','Victoria','Maya','Lila','Elena','Lucy','Savannah','Gabriella','Callie','Alaina','Sophie','Makayla','Kennedy','Sadie','Skyler','Allison','Caroline','Charlie','Penelope','Alyssa','Peyton','Samantha','Liliana','Bailey','Maria','Reagan','Violet','Eliana','Adeline','Eva','Stella','Keira','Katherine','Vivian','Alice','Alexandra','Camilla','Kayla','Alexis','Sydney','Kaelyn','Jasmine','Julia','Cora','Lauren','Piper','Gianna','Paisley','Bella','London','Clara','Cadence']
+male_names = ['Jackson','Aiden','Liam','Lucas','Noah','Mason','Ethan','Caden','Jacob','Logan','Jayden','Elijah','Jack','Luke','Michael','Benjamin','Alexander','James','Jayce','Caleb','Connor','William','Carter','Ryan','Oliver','Matthew','Daniel','Gabriel','Henry','Owen','Grayson','Dylan','Landon','Isaac','Nicholas','Wyatt','Nathan','Andrew','Cameron','Dominic','Joshua','Eli','Sebastian','Hunter','Brayden','David','Samuel','Evan','Gavin','Christian','Max','Anthony','Joseph','Julian','John','Colton','Levi','Muhammad','Isaiah','Aaron','Tyler','Charlie','Adam','Parker','Austin','Thomas','Zachary','Nolan','Alex','Ian','Jonathan','Christopher','Cooper','Hudson','Miles','Adrian','Leo','Blake','Lincoln','Jordan','Tristan','Jason','Josiah','Xavier','Camden','Chase','Declan','Carson','Colin','Brody','Asher','Jeremiah','Micah','Easton','Xander','Ryder','Nathaniel','Elliot','Sean','Cole']
+import random
 
 class Person: ## new from Naisha
     '''Person class has the following attributes:
     personID,gender, avatarImage, ethnicity, freckles,hairColor,eyeColor,brow,chin,matchScore'''
-    def __init__(self,personID,gender="male",avatarImage="image/default.jpg",ethnicity=None,freckles=False,hairColor="black",eyeColor="darkBrown",brow="normal",chin="normal",matchScore=0):
+    def __init__(self,personID,gender="male",avatarImage="image/default.jpg",
+                 ethnicity=None,freckles=False,hairColor="black",
+                 eyeColor="darkBrown",brow="normal",chin="normal",
+                 genotype=None,matchScore=0):
         self.personID=personID
         self.gender = gender
         self.avatarImage=avatarImage
@@ -16,7 +25,72 @@ class Person: ## new from Naisha
         self.brow=brow
         self.chin=chin
         self.matchScore=matchScore
+        self.genotype = genotype
+        
+        if self.gender == 'male':
+            self.personName = random.choice(male_names)
+        else:
+            self.personName = random.choice(female_names)
 
+    def get(self, attr):
+        return self.attr        
+        
+    def _calc_freckles(self):
+        """
+        True if freckles
+        """
+        genotype = self.genotype
+        freckles = {'rs1042602': ['0/0'], 'rs4911414': HETERO, 'rs1015362':['0/0'], 'rs1015362':HETERO, 'rs4778138': ['0/0']}
+        no_freckles = {'rs2153271': ['0/0'], 'rs4911414': ['1/1'], 'rs1015362':['A/A']}    
+        
+        freckles_score = 0
+        for rsid,g in genotype.items():
+            if rsid in freckles and g in freckles[rsid]:
+                freckles_score +=1
+            if rsid in no_freckles and g in no_freckles[rsid]:
+                freckles_score -=1
+            
+        return freckles_score > 0
+        
+    def _calc_hair(self):
+        hair = {'blonde': {'rs9544611': ['0/0'], 'rs12821256': ['1/1'], 'rs35264875': ['0/0'], 'rs12896399': ['0/1','1/0'], 'rs3829241': ['0/1','1/0'], 'rs1805005': ['1/1']},
+                'brown_black': {'rs1667394': ['0/0'], 'rs16891982': ['0/0','0/1','1/0']},
+                'redhead': {'rs1805009': ['0/1','1/0'], 'rs1805007': ['1/1'], 'rs1805008': ['1/1'], 'rs11547464': HETERO}}
+        return score_feature(hair, self.genotype)
+    
+    def _calc_eye(self):
+        eye = {'brown': {'rs1800401': ['0/1', '1/1', '1/0'], 'rs7495174': HETERO},
+               'blue': {'rs1800401': ['0/0'], 'rs7495174': ['0/0']}}
+        return score_feature(eye, self.genotype)
+    
+    def _calc_brow(self):
+        brow = {False: {'rs649057': HETERO}, True: {'rs649057': '0/0'}}
+        return score_feature(brow, self.genotype)
+        
+    def _calc_chin(self):
+        chin = {False: {'rs10985112': HETERO}, True: {'rs10985112': '0/0'}}
+        return score_feature(chin, self.genotype)
+    
+    def calc_features(self):
+        self.freckles = self._calc_freckles()
+        self.hairColor = self._calc_hair()
+        self.eyeColor = self._calc_eye()
+        self.brow = self._calc_brow()
+        self.chin = self._calc_chin()
+    
+def score_feature(feature_dict, genotype):
+    possibilities = list(feature_dict.keys())
+    scores = defaultdict(int)
+    for color, color_dict in feature_dict.items():
+        for rsid,g in genotype.items():
+            if rsid in color_dict and g in color_dict[rsid]:
+                scores[color] += 1
+    if len(scores) == 0 or max(scores.values()) == 0:
+        return possibilities[randint(0,len(scores))]
+    return sorted(scores, key = lambda x: x[1])[0]
+
+     
+    
 class Person_old(object):
 
     def __init__(self, filename):
@@ -139,3 +213,5 @@ class Person_old(object):
         length = len(self._ref_dict[0]) # number of columns
         for i in range(length):
             self.score_user_against_single_reference()
+            
+    
