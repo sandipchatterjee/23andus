@@ -1,8 +1,11 @@
-# venv
+tmp
 venv
+data
 
 # 23andme downloads and uploads
 genome*txt
+*.vcf
+*.vcf*
 uploads
 
 # Byte-compiled / optimized / DLL files
