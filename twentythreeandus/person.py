@@ -5,6 +5,12 @@
 class Person(object):
 
     def __init__(self, filename):
+        
+        # Ancestry: http://www.1000genomes.org/faq/which-populations-are-part-your-study
+        # One of ASW CEU CHB CHS CLM FIN GBR IBS JPT LWK MXL PUR TSI YRI (from hapmap3.8)
+        self.ancestry = ''
+        # One of ['EAS','EUR','AFR','AMR','SAS']
+        self.super_population = ''
 
         self.good_bad_dict = self._make_good_bad_dict()
         self.rsid_dict = {}
