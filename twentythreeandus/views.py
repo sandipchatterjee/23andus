@@ -21,14 +21,50 @@ class SubmitForm(Form):
     data_file = FileField('Your 23andMe data file', validators=[Required()])
     submit = SubmitField('Upload Data')
 
+'''
+freckles:
+True
+False
+
+hairColor:
+blonde
+brown_black 
+blonde
+redhead
+
+eyeColor:
+blue
+brown
+black
+
+brow:
+unibrow
+normal
+
+chin:
+True
+False
+
+ethnicity:
+European: EUR (coding for image) - FIN, CEU, TSI, GBR, IBS 
+African: AFR (coding for image) - YRI, LWK, GWD, MSL, ESN, ASW, ACB
+America: AMR (coding for image) - MXL, PUR, CLM, PEL
+South Asian: SAS (coding for image) - GIH, PJL, BEB, STU, ITU
+East Asian: EAS (coding for image) - CHB, JPT, CHS, CDX, KHV
+'''
+
 class FindMatchForm(Form):
     """FindMatchForm is a WTForm Form object for searching for a 23andUs match"""
     # your_name = StringField('Your name:', validators=[Required()])
 
-    # EyeColor
-    HairColor = SelectField('Hair color:', choices=[('any', 'Any'), ('black', 'Black'), ('brown','Brown'), ('blond','Blond'), ('red','Red')], validators=[Required()])
+    brow = SelectField('Eyebrow:', choices=[('any', 'Any'), ('unibrow', 'Unibrow'), ('normal','Non-unibrow')], validators=[Required()])
+    freckles = SelectField('Freckles?', choices=[('any', 'Any'), (True, 'Yes'), (False, 'No')], validators=[Required()])
+    chin = SelectField('Chin dimple?', choices=[('any', 'Any'), (True, 'Yes'), (False, 'No')], validators=[Required()])
+    hairColor = SelectField('Hair color:', choices=[('any', 'Any'), ('brown_black', 'Brown/Black'), ('blonde','Blonde'), ('redhead','Red')], validators=[Required()])
+    eyeColor = SelectField('Eye color:', choices=[('any', 'Any'), ('black', 'Black'), ('brown','Brown'), ('blue','Blue')], validators=[Required()])
+    ethnicity = SelectField('Ethnicity:', choices=[('EUR', 'European'), ('AFR', 'African'), ('AMR', 'American'), ('SAS', 'South Asian'), ('EAS', 'East Asian')])
 
-    opposite_sex = BooleanField('Only consider opposite sex matches')
+    # opposite_sex = BooleanField('Only consider opposite sex matches')
     # data_file = FileField('Your 23andMe data file', validators=[Required()])
 
     submit = SubmitField('Find My Match')
@@ -73,6 +109,17 @@ def findmatch():
         if request.method == 'POST':
             # message = Markup('Working on your match...')
             # flash(message)
+
+            filters = {}
+            filters['hairColor'] = findmatch_form.hairColor.data
+            filters['eyeColor'] = findmatch_form.eyeColor.data
+            filters['freckles'] = findmatch_form.freckles.data
+            filters['chin'] = findmatch_form.freckles.data
+            filters['brow'] = findmatch_form.brow.data
+            filters['ethnicity'] = findmatch_form.ethnicity.data
+
+            session['filters'] = filters
+
             return redirect(url_for('yourmatch'))
 
     return render_template('findmatch.html', vcf_filepath=session['vcf_filepath'], username=session['username'], form=findmatch_form)
@@ -83,9 +130,26 @@ def yourmatch():
     vcf_file = session['vcf_filepath']
     person_list = genotypematchme.score_me(submitter_vcf = vcf_file,submitter_gender = 'male')
 
-    return render_template('yourmatch.html', person_list=person_list, username=session['username'])
+    num_persons = len(person_list)
 
-@app.route('/pool')
-def pool():
-    return render_template('pool.html')
+    for person in person_list:
+        person.calc_features()
+
+    # filtering, if any
+    filters = session['filters']
+    for filter_param in filters:
+        if filter_param == 'any':
+            continue
+        else:
+            # filter person_list by filter_param
+            #
+            # for example, filter_param could be a eye_color, and filters['eye_color'] == 'brown'
+            # ...this list comprehension will filter by this filter_param
+            person_list = [person for person in person_list if person.get(filter_param) == filters[filter_param]]
+
+    return render_template('yourmatch.html', person_list=person_list[:5], num_persons=num_persons, username=session['username'])
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 

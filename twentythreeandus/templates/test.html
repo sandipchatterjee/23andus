@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}{{ app_name }} -- Find Match{% endblock %}
+
+{% block navbar %}
+{{ super() }}
+{% endblock %}
+
+{{ form.csrf_token }}
+
+{% block page_content %}
+
+        <div class="container">
+        {% for person in (1,2,3,4,5) %}
+            <div class="row">
+                <!-- ROW 1 -->
+                <div class="col-md-4">
+                    <img src="/static/img/mii/AMR_black_blue_nofreckle_female.jpg" width=250 height=250 />
+                </div>
+                <div class="col-md-4">
+                    <h2>Person 12345</h2>
+                    <h2><small>aka "Anna"</small></h2>
+                    <h2> You and "Anna" matched with a score of 1234 </h2>
+             <!-- person.get('avatarImage')
+             person.get('matchScore') 
+             person.get('personID')
+             person.get('gender')
+             person.get('ethnicity')
+             person.get('freckles')
+             person.get('hairColor')
+             person.get('eyeColor')
+             person.get('brow')
+             person.get('chin') -->
+                </div>
+                <div class="col-md-4">
+                    <p>
+                    <em>"Anna" {% if True %} has {% else %} does not have {% endif %} freckles, {% if True %} is of European ethnicity ,{% endif %}{% if True %} has brown/black hair, {% endif %}{% if False %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
+                    </p>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+
+            <div class="row">
+                <!-- ROW 1 -->
+                <div class="col-md-4">
+                    <img src="/static/img/mii/AFR_brown_blue_nofreckle_female_uni.jpg" width=250 height=250 />
+                </div>
+                <div class="col-md-4">
+                    <h2>Person 12346</h2>
+                    <h2><small>aka "Anna2"</small></h2>
+                    <h2> You and "Anna2" matched with a score of 12345 </h2>
+             <!-- person.get('avatarImage')
+             person.get('matchScore') 
+             person.get('personID')
+             person.get('gender')
+             person.get('ethnicity')
+             person.get('freckles')
+             person.get('hairColor')
+             person.get('eyeColor')
+             person.get('brow')
+             person.get('chin') -->
+                </div>
+                <div class="col-md-4">
+                    <p>
+                    <em>"Anna" {% if True %} has {% else %} does not have {% endif %} freckles, {% if True %} is of European ethnicity ,{% endif %}{% if True %} has brown/black hair, {% endif %}{% if False %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
+                    </p>
+                </div>
+            </div>            
+<!--             <div class="row">
+                ROW 2
+                <div class="col-md-4"></div>
+                column 3
+            </div> -->
+        </div>
+
+        <!-- Your avatar+info at the top
+
+        Top 5 matches each with picture, score,
+        Should be able to select  -->
+
+
+{% endblock %}
+
