@@ -3,6 +3,7 @@
 # Genotype Matching code
 
 import pandas as pd
+from multiprocessing import Pool
 from twentythreeandus.person import Person
 
 #Create a mendelian inheritance probability
@@ -34,23 +35,30 @@ def score_user_against_single_reference(submitter, single_ref_dict,probability_d
           ...
           }
         '''
-    total_score = 0.0
-    for rsid in submitter:
-        user_genotype = submitter[rsid]
-        if rsid not in single_ref_dict:
-            continue
-        if '.' in user_genotype: # can't deal with './.' missing genotypes
-            continue
-        ref_genotype = single_ref_dict[rsid]
-        cross = user_genotype+'_x_'+ref_genotype
-        probs = probability_dict[cross]
+    total_score = sum(map(lambda rsid: scorePerSNP(rsid,submitter,single_ref_dict,probability_dict,matchmesnps),submitter.keys()))
+    # pool = Pool()
 
-        good_bad_match = matchmesnps.loc[rsid]
-        prob_choice = probs[good_bad_match[0]]
-        magnitude = good_bad_match[1]
-        total_score += (prob_choice * magnitude)
+    # total_score = sum(pool.map(lambda rsid: scorePerSNP(rsid,submitter,single_ref_dict,probability_dict,matchmesnps),submitter.keys()))
+
+    # pool.close()
+    # pool.join()
 
     return total_score
+
+def scorePerSNP(rsid,submitter,single_ref_dict,probability_dict,matchmesnps):
+    user_genotype = submitter[rsid]
+    if rsid not in single_ref_dict:
+        return 0
+    if '.' in user_genotype: # can't deal with './.' missing genotypes
+        return 0
+    ref_genotype = single_ref_dict[rsid]
+    cross = user_genotype+'_x_'+ref_genotype
+    probs = probability_dict[cross]
+
+    good_bad_match = matchmesnps.loc[rsid]
+    prob_choice = probs[good_bad_match[0]]
+    magnitude = good_bad_match[1]
+    return (prob_choice * magnitude)
 
 def score_me(submitter_vcf,submitter_gender):
 
@@ -108,7 +116,7 @@ def score_me(submitter_vcf,submitter_gender):
     submitter = meGeno[9].to_dict()
 
     score = {}
-    for sample in commonSamples[:5]: ###REMOVE
+    for sample in sorted(commonSamples)[:50]: ###REMOVE
         single_ref_dict = referencePoolGeno[sample].to_dict()
         score[sample]=score_user_against_single_reference(submitter, single_ref_dict,probability_dict,matchmesnps)
 

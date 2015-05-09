@@ -152,7 +152,7 @@ def yourmatch():
     print(filters)
     print(len(person_list))
 
-    return render_template('yourmatch.html', person_list=person_list[:5], num_persons=num_persons, username=session['username'])
+    return render_template('yourmatch.html', person_list=person_list[:50], num_persons=num_persons, username=session['username'])
 
 @app.route('/test')
 def test():

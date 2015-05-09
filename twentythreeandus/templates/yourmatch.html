@@ -25,7 +25,7 @@
                 <div class="col-md-4">
                     <h2>Person ID {{ person.personID }}</h2>
                     <h2><small>aka "{{ person.personName }}"</small></h2>
-                    <h2>{{ username }} and "{{ person.personName }}" matched with a score of {{ person.matchScore }}</h2>
+                    <h3>{{ username }} and "{{ person.personName }}" matched with a score of {{ person.matchScore }}</h3>
              <!-- person.get('avatarImage')
              person.get('matchScore') 
              person.get('personID')
@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-md-4">
                     <p>
-                    <em>"{{ person.personName }}" {% if person.freckles %} has {% else %} does not have {% endif %} freckles, {% if person.ethnicity == 'EUR' %} is of European ethnicity ,{% endif %}{% if person.hairColor %} has brown/black hair, {% endif %}{% if person.chin %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
+                    <em>"{{ person.personName }}" {% if person.freckles %} has {% else %} does not have {% endif %} freckles,{% if person.unibrow %} has {% else %} does not have {% endif %} a unibrow,{% if person.ethnicity == 'EUR' %} is of European ethnicity ,{% endif %}{% if person.hairColor %} has brown/black hair, {% endif %}{% if person.chin %}and has a dimpled chin {% else %} and has a non-dimpled chin{% endif %}</em>
                     </p>
                 </div>
             </div>

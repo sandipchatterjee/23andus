@@ -123,9 +123,9 @@ class Person: ## new from Naisha
         if self.hairColor == "blonde":
             searchstring += "blonde_"
         elif self.hairColor == "brown_black":
-            searchstring += "[brown_|black_]"
+            searchstring += "(brown_|black_)"
         elif self.hairColor == "redhead":
-            searchstring += "blonde_"
+            searchstring += "red_" #error?
 
         if self.eyeColor == "blue":
             searchstring += "blue_"
@@ -133,14 +133,16 @@ class Person: ## new from Naisha
             searchstring += "brown_"
 
         if self.freckles:
-           searchstring += "freckle_"
+           searchstring += "freckle(.*)_"
+           # searchstring += "[freckle_|freckles_]"
         else:
-           searchstring += "nofreckle_" 
+           searchstring += "nofreckle(.*)_" 
+           # searchstring += "[nofreckle_|nofreckles_]"
 
         if self.gender == "male":
-           searchstring += "male_"
+           searchstring += "male"
         else:
-           searchstring += "female_"
+           searchstring += "female"
 
         if self.brow:
             searchstring += "(.*)uni"
@@ -148,13 +150,20 @@ class Person: ## new from Naisha
         if self.chin:
             searchstring += "(.*)dimple"
 
-        x=re.compile(searchstring) 
-        sub_list = list(filter(x.match, allimages))
+        x=re.compile(searchstring,re.IGNORECASE) 
+        sub_list = sorted(list(filter(x.match, allimages)))
+        print('-----------')
+        print(self.hairColor)
+        print(searchstring,len(sub_list))
+        print(type(searchstring))
+        print(allimages)
         if len(sub_list)==0:
-            x=re.compile(ethn+"(.*)_"+self.gender)
-            sub_list = list(filter(x.match, allimages))
+            x=re.compile(ethn+"(.*)_"+self.gender, re.IGNORECASE)
+            sub_list = sorted(list(filter(x.match, allimages)))
     
-        return random.sample(sub_list,1)
+        # return random.sample(sub_list,1)
+        # print(sub_list[0])
+        return [sub_list[0]]
 
     
 def score_feature(feature_dict, genotype):
