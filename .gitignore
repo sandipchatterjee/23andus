@@ -1,6 +1,6 @@
 tmp
 venv
-data
+*.map
 
 # 23andme downloads and uploads
 genome*txt
