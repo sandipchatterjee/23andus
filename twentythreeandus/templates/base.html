@@ -14,17 +14,24 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('pool') }}">Pool</a></li>
+                <li><a href="{{ url_for('findmatch') }}">Find Match</a></li>
             </ul>
         </div>
     </div>
 </div>
 {% endblock %}
 
-<!-- {% block content %}
+{% block content %}
 <div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
     <div class="page-header">
         <h1>{{ app_name }}</h1>
     </div>
+    {% block page_content %}{% endblock %}
 </div>
-{% endblock %} -->
+{% endblock %}

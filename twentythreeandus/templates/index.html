@@ -9,16 +9,16 @@
 
 {{ form.csrf_token }}
 
-{% block content %}
-<div class="container">
+{% block page_content %}
+<!-- <div class="container">
     <div class="page-header">
-        <h1> {{ app_name }} </h1>
+        <h1> {{ app_name }} </h1> -->
 
         <div class="span2">
             {{ wtf.quick_form(form, enctype="multipart/form-data") }}
         </div>
 
-    </div>
-</div>
+<!--     </div>
+</div> -->
 {% endblock %}
 

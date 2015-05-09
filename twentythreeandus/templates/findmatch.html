@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}{{ app_name }} -- Find Match{% endblock %}
+
+{% block navbar %}
+{{ super() }}
+{% endblock %}
+
+{{ form.csrf_token }}
+
+{% block page_content %}
+
+        <h2>Hello, {{ username }}!</h2>
+        <h3>Select some options below to find your match</h3>
+
+        <div class="span2">
+        Using data file {{ vcf_filepath }}
+        </div>
+
+        <div class="span1">
+        {{ wtf.quick_form(form, enctype="multipart/form-data") }}
+        </div>
+
+{% endblock %}
+
