@@ -46,11 +46,11 @@ def calculate_population(path_to_23_file, name):
     pass
 
     # convert 23andme to bed/bim/bam
-    command = ['plink', '--23file', path_to_23_file, '--record','--out', name, '--make-bed']
+    command = ['bin/plink_mac/plink', '--23file', path_to_23_file, '--record','--out', name, '--make-bed']
     subprocess.call(command)
     
     # run ancestry
-    command = ['python', 'runancestry.py', '--freq', 'hapmap3.allchroms.shared.matrix', '--plink', name, '--out', name + '.ancestry']
+    command = ['python', 'iadmix/runancestry.py', '--freq', 'iadmix/hapmap3.allchroms.shared.matrix', '--plink', name, '--out', name + '.ancestry']
     subprocess.call(command)
     
     

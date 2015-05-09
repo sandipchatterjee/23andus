@@ -1,0 +1,96 @@
+iADMIX, version 0.2, Vikas Bansal (vibansal@ucsd.edu), last modified: October 7 2014
+
+Introduction
+============
+
+Inference of ancestry is an important aspect of disease association studies as well as for understanding population history. We have developed a fast and accurate method for estimating the admixture proportions for an individual's ancestry using genotype or sequence data and population allele frequencies from a set of parental/reference populations. The method can work with genotype data or sequence data (aligned sequence reads in a BAM file) derived from low-coverage whole-genome sequencing, exome-sequencing or even targeted sequencing experiments. The method uses the L-BFGS-B code  (a limited memory BFGS algorithm with bound constraints) for optimizing the likelihood function and is extremely fast. The program (binaries compiled for Linux x86_64) can be downloaded from attachments below. 
+
+The method is described in the paper: "Fast individual ancestry inference from DNA sequence data leveraging allele frequencies from multiple populations". Vikas Bansal and Ondrej Libiger. (submitted) 
+
+
+CODE DESCRIPTION:
+=================
+
+There are three components of the code: 
+
+a. runancestry.py is a python script that is the front-end to pre-process the input data and run the method
+b. "ANCESTRY" is the compiled C executable that has code implementing the main method
+c. "calculateGLL" is an auxilliary C executable that contains the program to calculate the genotype likelihoods from sorted bam files 
+
+
+Requirements:
+=============
+
+To run the program, you need at least the following files: 
+
+1. Input genotype or sequence reads file: currently three different formats are accepted: 
+	
+	(a) file with aligned reads for the individual diploid genome. iADMIX currently accepts BAM files that are coordinate sorted, i.e. by chromosomal position. 
+	(b) simple genotype file with two columns (rsid genotype) for SNPs
+	(c) PLINK .ped and .map files 
+
+
+2. population allele frequency file with allele frequency at SNPs for multiple populations. A sample file using HapMap data is provided for analysis.  
+
+
+
+Running the program:
+=====================
+
+A python script runancestry.py is used to pre-process the input files and run the method to estimate admixture coefficients. 
+
+The command "python runancestry.py"  will provide a list of options for running the program. 
+
+Example: python runancestry.py --freq hapmap3.allchroms.shared.matrix --geno HGDP01254.genotypes --out HGDP12054.ancestry
+Example: python runancestry.py --freq hapmap3.allchroms.shared.matrix --bam HGDP01254.sorted.bam --out HGDP12054.ancestry
+Example: python runancestry.py --freq hapmap3.allchroms.shared.matrix --plink HGDP01254.genotypes (ped/map) --out HGDP12054.ancestry
+
+
+Usage: runancestry.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -b BAMFILE, --bam=BAMFILE
+                        input bam file name
+  --geno=GENOFILE       input file name for simple genotype file: rsid AG on
+                        each line
+  --vcf=VCFFILE, --VCF=VCFFILE
+                        input file name for VCF file
+  --plink=PEDFILE       input file name for plink file in ped/map format
+                        (provide prefix of ped file name without the .ped)
+  -f AFFILE, --freq=AFFILE
+                        allele frequency file
+  -o OUTFILE, --out=OUTFILE
+                        prefix of output file names
+  -p POOLSIZE, --poolsize=POOLSIZE
+                        pool size for non-diploid samples, default = 2
+  --pr=PR, --parsimony=PR
+                        parsimonious ancestry estimation 0/1, default = 1
+  --hwe=HWE, --HWE=HWE  HWE deviation estimation 0/1, default = 0
+  --strand=INCLUDE_STRAND_AMBIGUOUS
+                        <0/1> include SNPs that are strand ambiguous (A/T,
+                        C/G): default = 0 (not included)
+  --path=PATH           path to directory with executables ANCESTRY and
+                        calculateGLL
+
+
+
+
+
+
+HISTORY
+====================
+
+
+October 7 2014 
+
+	- v0.2 released with options to handle plink files
+
+
+
+December 19 2013 
+
+	- first version of method released on website 
+
+
+
