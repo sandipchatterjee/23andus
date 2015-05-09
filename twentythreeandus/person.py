@@ -1,3 +1,8 @@
+
+# coding: utf-8
+
+# In[ ]:
+
 #!/usr/bin/env python3
 
 # from reference import References
@@ -7,6 +12,8 @@ HETERO = ['1/0','0/1','0/0']
 female_names = ['Sophia','Emma','Olivia','Ava','Isabella','Mia','Zoe','Lily','Emily','Madelyn','Madison','Chloe','Charlotte','Aubrey','Avery','Abigail','Kaylee','Layla','Harper','Ella','Amelia','Arianna','Riley','Aria','Hailey','Hannah','Aaliyah','Evelyn','Addison','Mackenzie','Adalyn','Ellie','Brooklyn','Nora','Scarlett','Grace','Anna','Isabelle','Natalie','Kaitlyn','Lillian','Sarah','Audrey','Elizabeth','Leah','Annabelle','Kylie','Mila','Claire','Victoria','Maya','Lila','Elena','Lucy','Savannah','Gabriella','Callie','Alaina','Sophie','Makayla','Kennedy','Sadie','Skyler','Allison','Caroline','Charlie','Penelope','Alyssa','Peyton','Samantha','Liliana','Bailey','Maria','Reagan','Violet','Eliana','Adeline','Eva','Stella','Keira','Katherine','Vivian','Alice','Alexandra','Camilla','Kayla','Alexis','Sydney','Kaelyn','Jasmine','Julia','Cora','Lauren','Piper','Gianna','Paisley','Bella','London','Clara','Cadence']
 male_names = ['Jackson','Aiden','Liam','Lucas','Noah','Mason','Ethan','Caden','Jacob','Logan','Jayden','Elijah','Jack','Luke','Michael','Benjamin','Alexander','James','Jayce','Caleb','Connor','William','Carter','Ryan','Oliver','Matthew','Daniel','Gabriel','Henry','Owen','Grayson','Dylan','Landon','Isaac','Nicholas','Wyatt','Nathan','Andrew','Cameron','Dominic','Joshua','Eli','Sebastian','Hunter','Brayden','David','Samuel','Evan','Gavin','Christian','Max','Anthony','Joseph','Julian','John','Colton','Levi','Muhammad','Isaiah','Aaron','Tyler','Charlie','Adam','Parker','Austin','Thomas','Zachary','Nolan','Alex','Ian','Jonathan','Christopher','Cooper','Hudson','Miles','Adrian','Leo','Blake','Lincoln','Jordan','Tristan','Jason','Josiah','Xavier','Camden','Chase','Declan','Carson','Colin','Brody','Asher','Jeremiah','Micah','Easton','Xander','Ryder','Nathaniel','Elliot','Sean','Cole']
 import random
+import os
+import re
 
 class Person: ## new from Naisha
     '''Person class has the following attributes:
@@ -14,7 +21,7 @@ class Person: ## new from Naisha
     def __init__(self,personID,gender="male",avatarImage="image/default.jpg",
                  ethnicity=None,freckles=False,hairColor="black",
                  eyeColor="darkBrown",brow="normal",chin="normal",
-                 genotype=None,matchScore=0):
+                 genotype=None,matchScore=0,submitter_23=None):
         self.personID=personID
         self.gender = gender
         self.avatarImage=avatarImage
@@ -26,6 +33,7 @@ class Person: ## new from Naisha
         self.chin=chin
         self.matchScore=matchScore
         self.genotype = genotype
+        self.submitter_23=submitter_23
         
         if self.gender == 'male':
             self.personName = random.choice(male_names)
@@ -64,11 +72,11 @@ class Person: ## new from Naisha
         return score_feature(eye, self.genotype)
     
     def _calc_brow(self):
-        brow = {False: {'rs649057': HETERO}, True: {'rs649057': '0/0'}}
+        brow = {False: {'rs649057': HETERO}, True: {'rs649057': ['0/0']}}
         return score_feature(brow, self.genotype)
         
     def _calc_chin(self):
-        chin = {False: {'rs10985112': HETERO}, True: {'rs10985112': '0/0'}}
+        chin = {False: {'rs10985112': HETERO}, True: {'rs10985112': ['0/0']}}
         return score_feature(chin, self.genotype)
     
     def calc_features(self):
@@ -77,6 +85,59 @@ class Person: ## new from Naisha
         self.eyeColor = self._calc_eye()
         self.brow = self._calc_brow()
         self.chin = self._calc_chin()
+        self.avatarImage = self._calc_image()
+    
+    def _calc_image(self):
+        allimages=os.listdir("twentythreeandus/static/img/mii")
+        searchstring = ''
+
+        if self.ethnicity in ["FIN","CEU","TSI","GBR","IBS"]:
+            ethn=searchstring="EUR_"
+        elif self.ethnicity in ["YRI","LWK","GWD","MSL","ESN","ASW","ACB"]:
+            ethn=searchstring="AFR_"
+        elif self.ethnicity in ["MXL","PUR","CLM","PEL"]:
+            ethn=searchstring="AMR_"
+        elif self.ethnicity in ["GIH","PJL","BEB","STU","ITU"]:
+            ethn=searchstring="SAS_"
+        elif self.ethnicity in ["CHB","JPT","CHS","CDX","KHV"]:
+            ethn=searchstring="EAS_"
+
+        if self.hairColor == "blonde":
+            searchstring += "blonde_"
+        elif self.hairColor == "brown_black":
+            searchstring += "[brown_|black_]"
+        elif self.hairColor == "redhead":
+            searchstring += "blonde_"
+
+        if self.eyeColor == "blue":
+            searchstring += "blue_"
+        else:
+            searchstring += "brown_"
+
+        if self.freckles:
+           searchstring += "freckle_"
+        else:
+           searchstring += "nofreckle_" 
+
+        if self.gender == "male":
+           searchstring += "male_"
+        else:
+           searchstring += "female_"
+
+        if self.brow:
+            searchstring += "(.*)uni"
+
+        if self.chin:
+            searchstring += "(.*)dimple"
+
+        x=re.compile(searchstring) 
+        sub_list = list(filter(x.match, allimages))
+        if len(sub_list)==0:
+            x=re.compile(ethn+"(.*)_"+self.gender)
+            sub_list = list(filter(x.match, allimages))
+    
+        return random.sample(sub_list,1)
+
     
 def score_feature(feature_dict, genotype):
     possibilities = list(feature_dict.keys())
@@ -87,7 +148,7 @@ def score_feature(feature_dict, genotype):
                 scores[color] += 1
     if len(scores) == 0 or max(scores.values()) == 0:
         return possibilities[randint(0,len(scores))]
-    return sorted(scores, key = lambda x: x[1])[0]
+    return sorted(scores.items(), key = lambda x: x[1])[0][0]
 
      
     
@@ -215,3 +276,4 @@ class Person_old(object):
             self.score_user_against_single_reference()
             
     
+

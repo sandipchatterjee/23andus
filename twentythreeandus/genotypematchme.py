@@ -66,7 +66,7 @@ def score_me(submitter_vcf,submitter_gender):
     referencePoolGeno.set_index("ID",inplace=True)
 
     #Read the gender and race information for the reference individuals
-    referenceGenderRace = pd.read_table("data/referenceGenderRace.txt")
+    referenceGenderRace = pd.read_table("data/referenceGenderRace2.txt")
     referenceGenderRace.set_index("IndividualID",inplace=True)
 
     #Read the submitter VCF file
@@ -123,7 +123,18 @@ def score_me(submitter_vcf,submitter_gender):
     person_list = []
     for sample in sorted_score.keys():
         #Create a Person object
-        myPerson = Person(personID=sample,gender=referenceGenderRace.loc[sample,"Gender"],ethnicity=referenceGenderRace.loc[sample,"Population"],matchScore=sorted_score[sample]) #avatarImage="image/default.jpg",freckles=False,hairColor="black",eyeColor="darkBrown",brow="normal",chin="normal"
+        if referenceGenderRace.loc[sample,"Gender"]==2:
+            gender="female"
+        else:
+            gender = "male"
+        myPerson = Person(personID=sample,gender=gender,ethnicity=referenceGenderRace.loc[sample,"Population"],matchScore=sorted_score[sample]) #avatarImage="image/default.jpg",freckles=False,hairColor="black",eyeColor="darkBrown",brow="normal",chin="normal"
+        #Add genotype
+        myPerson.genotype = referencePoolGeno[sample].to_dict()
+        #Add submitter_23 filename
+        submitter_23=submitter_vcf.replace("data","upload")
+        submitter_23=submitter_23.replace(".vcf","")
+        myPerson.submitter_23 = submitter_23
+        myPerson.calc_features()
         person_list.append(myPerson)
     
     ##Add more methods in the Person class once I get data from William
